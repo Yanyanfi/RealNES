@@ -12,7 +12,7 @@ using System.Text.Json.Serialization;
 
 namespace RealNES.Core.Emulator.CPU.Decoder.Instructions.Access;
 
-internal sealed class LDA(CpuBus bus, FlagSetter flagSetter) : InstructionBase(bus, flagSetter)
+internal sealed class LDA(InsructionServices services) : InstructionBase(services)
 {
     public override IReadOnlyList<byte> OpCodes { get; } = [0xa9, 0xa5, 0xb5, 0xad, 0xbd, 0xb9, 0xa1, 0xb1];
 
