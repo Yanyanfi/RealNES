@@ -15,6 +15,9 @@ internal sealed class AddressingService
     public void StepZpX1(CpuBus bus, ref readonly CpuState state) => _arg1 = bus[state.Pc++];
     public void StepZpX2(CpuBus bus) => _temp = bus[_arg1];
     public byte GetZpXAddr(ref readonly CpuState state) => (byte)((_temp + state.X) & 0xff);
+    public void StepZpY1(CpuBus bus, ref readonly CpuState state) => _arg1 = bus[state.Pc++];
+    public void StepZpY2(CpuBus bus) => _temp = bus[_arg1];
+    public byte GetZpYAddr(CpuBus bus, ref readonly CpuState state) => (byte)((_temp + state.Y) & 0xff);
     public void StepAbs1(CpuBus bus, ref readonly CpuState state) => _arg1 = bus[state.Pc++];
     public void StepAbs2(CpuBus bus, ref readonly CpuState state) => _arg2 = bus[state.Pc++];
     public ushort GetAbsAddr() => (ushort)(_arg2 * 256 + _arg1);
@@ -53,7 +56,7 @@ internal sealed class AddressingService
     public void StepIndirectX1(CpuBus bus, ref readonly CpuState state) => _arg1 = bus[state.Pc++];
     public void StepIndirectX2(CpuBus bus) => bus.Read(_arg1);
     public void StepIndirectX3(CpuBus bus,ref readonly CpuState state) => _addr = bus[(_arg1 + state.X) % 256];
-    public void StepIndirectX4(CpuBus bus, ref readonly CpuState state) => _addr += bus[(_arg1 + state.X + 1) % 256];
+    public void StepIndirectX4(CpuBus bus, ref readonly CpuState state) => _addr += (ushort)(bus[(_arg1 + state.X + 1) % 256]*256);
     public ushort GetIndirectXAddr() => _addr;
     public void StepIndirectY1(CpuBus bus, ref readonly CpuState state) => _arg1 = bus[state.Pc++];
     public void StepIndirectY2(CpuBus bus) => _addr = bus[_arg1];

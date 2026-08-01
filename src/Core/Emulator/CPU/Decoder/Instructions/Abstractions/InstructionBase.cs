@@ -7,12 +7,12 @@ using System.Text;
 
 namespace RealNES.Core.Emulator.CPU.Decoder.Instructions.Abstractions;
 
-internal abstract class InstructionBase(InsructionServices services) : IInstruction
+internal abstract class InstructionBase(InstructionServices services) : IInstruction
 {
     protected AddressingType _addressingType;
     protected readonly CpuBus _bus = services.Bus;
     protected readonly FlagSetter _flagSetter = services.FlagSetter;
-    protected readonly AddressingService _addrService = services.AddressingService;
+    protected readonly AddressingService _ads = services.AddressingService;
 
     public abstract IReadOnlyList<byte> OpCodes { get; }
     /// <summary>
@@ -41,4 +41,4 @@ internal abstract class InstructionBase(InsructionServices services) : IInstruct
 
     protected virtual void OnEndInstr(ref readonly CpuState state) { }
 }
-record InsructionServices(CpuBus Bus, FlagSetter FlagSetter, AddressingService AddressingService);
+internal record InstructionServices(CpuBus Bus, FlagSetter FlagSetter, AddressingService AddressingService);

@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace RealNES.Core.Emulator.CPU.Decoder.Instructions.Other;
 
-internal sealed class NOP(InsructionServices services) : InstructionBase(services)
+internal sealed class NOP(InstructionServices services) : InstructionBase(services)
 {
     public override IReadOnlyList<byte> OpCodes => throw new NotImplementedException();
 

@@ -15,6 +15,7 @@ internal sealed class CpuBus
     {
         throw new NotImplementedException();
     }
+    public byte Peek(ushort address) => throw new NotImplementedException();
     public byte this[ushort address]
     {
         get => Read(address);
