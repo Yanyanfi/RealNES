@@ -1,4 +1,6 @@
 ﻿using RealNES.Core.Emulator.Communication;
+using RealNES.Core.Emulator.CPU.Decoder.Instructions.Enums;
+using RealNES.Core.Emulator.CPU.Decoder.Instructions.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;

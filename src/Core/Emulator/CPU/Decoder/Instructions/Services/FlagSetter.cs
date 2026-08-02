@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace RealNES.Core.Emulator.CPU.Decoder;
+namespace RealNES.Core.Emulator.CPU.Decoder.Instructions.Services;
 
 internal sealed class FlagSetter
 {

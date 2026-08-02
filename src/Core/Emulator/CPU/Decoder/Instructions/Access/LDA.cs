@@ -1,6 +1,7 @@
 ﻿using RealNES.Core.Emulator.Communication;
 using RealNES.Core.Emulator.CPU.Decoder.Exceptions;
 using RealNES.Core.Emulator.CPU.Decoder.Instructions.Abstractions;
+using RealNES.Core.Emulator.CPU.Decoder.Instructions.Enums;
 using System;
 using System.Collections.Generic;
 using System.Net.Http.Headers;

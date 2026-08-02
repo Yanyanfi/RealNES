@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace RealNES.Core.Emulator.CPU.Decoder.Instructions;
+namespace RealNES.Core.Emulator.CPU.Decoder.Instructions.Enums;
 
 internal enum AddressingType
 {

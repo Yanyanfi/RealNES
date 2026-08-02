@@ -1,5 +1,6 @@
 ﻿using RealNES.Core.Emulator.Communication;
 using RealNES.Core.Emulator.CPU.Decoder.Instructions.Abstractions;
+using RealNES.Core.Emulator.CPU.Decoder.Instructions.Enums;
 using System.Runtime.CompilerServices;
 
 namespace RealNES.Core.Emulator.CPU.Decoder.Instructions.Other;

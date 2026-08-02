@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
-namespace RealNES.Core.Emulator.CPU.Decoder.Instructions;
+namespace RealNES.Core.Emulator.CPU.Decoder.Instructions.Services;
 
 internal sealed class AddressingService
 {
@@ -17,7 +17,7 @@ internal sealed class AddressingService
     public byte GetZpXAddr(ref readonly CpuState state) => (byte)((_temp + state.X) & 0xff);
     public void StepZpY1(CpuBus bus, ref readonly CpuState state) => _arg1 = bus[state.Pc++];
     public void StepZpY2(CpuBus bus) => _temp = bus[_arg1];
-    public byte GetZpYAddr(CpuBus bus, ref readonly CpuState state) => (byte)((_temp + state.Y) & 0xff);
+    public byte GetZpYAddr(ref readonly CpuState state) => (byte)((_temp + state.Y) & 0xff);
     public void StepAbs1(CpuBus bus, ref readonly CpuState state) => _arg1 = bus[state.Pc++];
     public void StepAbs2(CpuBus bus, ref readonly CpuState state) => _arg2 = bus[state.Pc++];
     public ushort GetAbsAddr() => (ushort)(_arg2 * 256 + _arg1);
