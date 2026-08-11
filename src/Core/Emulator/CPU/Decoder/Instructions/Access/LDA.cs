@@ -1,15 +1,6 @@
-﻿using RealNES.Core.Emulator.Communication;
-using RealNES.Core.Emulator.CPU.Decoder.Exceptions;
+﻿using RealNES.Core.Emulator.CPU.Decoder.Exceptions;
 using RealNES.Core.Emulator.CPU.Decoder.Instructions.Abstractions;
 using RealNES.Core.Emulator.CPU.Decoder.Instructions.Enums;
-using System;
-using System.Collections.Generic;
-using System.Net.Http.Headers;
-using System.Net.WebSockets;
-using System.Resources;
-using System.Runtime.Serialization.Json;
-using System.Text;
-using System.Text.Json.Serialization;
 
 namespace RealNES.Core.Emulator.CPU.Decoder.Instructions.Access;
 
@@ -198,7 +189,7 @@ internal sealed class LDA(InstructionServices services) : InstructionBase(servic
                 _addr = _bus[_arg1];
                 return;
             case 4:
-                _addr+=(ushort)(_bus[(_arg1 + 1) % 256]*256);
+                _addr += (ushort)(_bus[(_arg1 + 1) % 256] * 256);
                 return;
             case 5:
                 var lowAddr = _addr & 0xff;
@@ -208,7 +199,7 @@ internal sealed class LDA(InstructionServices services) : InstructionBase(servic
                     EndInstr(in state);
                     return;
                 }
-                _addr = (ushort)(_addr + state.Y-256);
+                _addr = (ushort)(_addr + state.Y - 256);
                 _bus.Read(_addr);
                 return;
             case 6:

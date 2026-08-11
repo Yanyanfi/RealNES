@@ -1,16 +1,13 @@
 ﻿using RealNES.Core.Emulator.CPU.Decoder.Exceptions;
 using RealNES.Core.Emulator.CPU.Decoder.Instructions.Abstractions;
 using RealNES.Core.Emulator.CPU.Decoder.Instructions.Enums;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace RealNES.Core.Emulator.CPU.Decoder.Instructions.Access;
 
 internal sealed class LDY(InstructionServices services) : InstructionBase(services)
 {
     private byte _arg1;
-    public override IReadOnlyList<byte> OpCodes { get; } =[0xa0,0xa4,0xb4,0xac,0xbc];
+    public override IReadOnlyList<byte> OpCodes { get; } = [0xa0, 0xa4, 0xb4, 0xac, 0xbc];
 
     public override void Process(ref readonly CpuState state)
     {

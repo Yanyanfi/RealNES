@@ -1,16 +1,13 @@
 ﻿using RealNES.Core.Emulator.CPU.Decoder.Exceptions;
 using RealNES.Core.Emulator.CPU.Decoder.Instructions.Abstractions;
 using RealNES.Core.Emulator.CPU.Decoder.Instructions.Enums;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace RealNES.Core.Emulator.CPU.Decoder.Instructions.Access;
 
 internal sealed class LDX(InstructionServices services) : InstructionBase(services)
 {
     private byte _arg1;
-    public override IReadOnlyList<byte> OpCodes { get; } =[0xa2,0xa6,0xb6,0xae,0xbe];
+    public override IReadOnlyList<byte> OpCodes { get; } = [0xa2, 0xa6, 0xb6, 0xae, 0xbe];
 
     public override void Process(ref readonly CpuState state)
     {
@@ -102,7 +99,7 @@ internal sealed class LDX(InstructionServices services) : InstructionBase(servic
                 _ads.StepAbsY2(_bus, in state);
                 return;
             case 4:
-                if(_ads.GetAbsYAddr1(_bus,in state,out var addr))
+                if (_ads.GetAbsYAddr1(_bus, in state, out var addr))
                 {
                     state.X = _bus[addr];
                     EndInstr(in state);

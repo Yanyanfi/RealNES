@@ -1,11 +1,6 @@
 ﻿using RealNES.Core.Emulator.Communication;
 using RealNES.Core.Emulator.CPU.Decoder.Instructions.Enums;
 using RealNES.Core.Emulator.CPU.Decoder.Instructions.Services;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
-using System.Resources;
-using System.Text;
 
 namespace RealNES.Core.Emulator.CPU.Decoder.Instructions.Abstractions;
 
@@ -15,6 +10,8 @@ internal abstract class InstructionBase(InstructionServices services) : IInstruc
     protected readonly CpuBus _bus = services.Bus;
     protected readonly FlagSetter _flagSetter = services.FlagSetter;
     protected readonly AddressingService _ads = services.AddressingService;
+    protected readonly StackService _stack = services.StackService;
+    protected readonly FlagReader _flagReader = services.FlagReader;
 
     public abstract IReadOnlyList<byte> OpCodes { get; }
     /// <summary>
@@ -25,7 +22,7 @@ internal abstract class InstructionBase(InstructionServices services) : IInstruc
     public abstract void Process(ref readonly CpuState state);
     public void Step(ref readonly CpuState state)
     {
-        if(state.Cycle == 1)
+        if (state.Cycle == 1)
         {
             var opCode = _bus[state.Pc];
             _addressingType = GetAddressingType(opCode);
@@ -43,4 +40,4 @@ internal abstract class InstructionBase(InstructionServices services) : IInstruc
 
     protected virtual void OnEndInstr(ref readonly CpuState state) { }
 }
-internal record InstructionServices(CpuBus Bus, FlagSetter FlagSetter, AddressingService AddressingService);
+internal record InstructionServices(CpuBus Bus, FlagSetter FlagSetter, AddressingService AddressingService, StackService StackService, FlagReader FlagReader);

@@ -1,21 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Text;
+﻿using RealNES.Core.Emulator.Memory;
 
 namespace RealNES.Core.Emulator.Communication;
 
-internal sealed class CpuBus
+internal sealed class CpuBus(InternalRam cpuRam)
 {
-    public void Write(byte value,ushort address)
+    private readonly InternalRam _cpuRam = cpuRam;
+    public byte LastData { get; private set; }
+    public ushort LastAddress { get; private set; }
+    public bool IsWrite { get; private set; }
+    public bool IsReadOrWriteLastCycle { get; private set; } = false;
+    public void Write(byte value, ushort address)
     {
-        throw new NotImplementedException();
+        switch (address)
+        {
+            case < 0x2000:
+                _cpuRam[(ushort)(address % 0x800)] = value;
+                break;
+        }
+#if DEBUG
+        IsWrite = true;
+        LastData = value;
+        LastAddress = address;
+        IsReadOrWriteLastCycle = true;
+#endif
     }
     public byte Read(ushort address)
     {
-        throw new NotImplementedException();
+        var value = address switch
+        {
+            < 0x2000 => _cpuRam[(ushort)(address % 0x800)],
+            _ => throw new Exception()
+        };
+#if DEBUG
+        IsWrite = false;
+        LastAddress = address;
+        LastData = value;
+        IsReadOrWriteLastCycle = true;
+#endif
+        return value;
     }
-    public byte Peek(ushort address) => throw new NotImplementedException();
+    public void ClearIOState() => IsReadOrWriteLastCycle = false;
     public byte this[ushort address]
     {
         get => Read(address);

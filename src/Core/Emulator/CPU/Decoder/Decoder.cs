@@ -1,28 +1,24 @@
 ﻿using RealNES.Core.Emulator.Communication;
 using RealNES.Core.Emulator.CPU.Decoder.Exceptions;
 using RealNES.Core.Emulator.CPU.Decoder.Instructions.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.Net.WebSockets;
-using System.Text;
 
 namespace RealNES.Core.Emulator.CPU.Decoder;
 
 internal sealed class Decoder : IDecoder
 {
-    private readonly Dictionary<byte, IInstruction> _instructionTable = [];
+    private readonly IInstruction[] _instructionTable = new IInstruction[256];
     private readonly CpuBus _cpuBus;
     private IInstruction? _currentInstr;
     ///<exception cref="RepeatOpCodeException"/>
-    public Decoder(IEnumerable<IInstruction> instructions,CpuBus cpuBus)
+    public Decoder(IEnumerable<IInstruction> instructions, CpuBus cpuBus)
     {
-        foreach(var instr in instructions)
+        foreach (var instr in instructions)
         {
             var codes = instr.OpCodes;
-            foreach(var code in codes)
+            foreach (var code in codes)
             {
-                if (_instructionTable.TryGetValue(code, out var repeatInstr))
-                    throw new RepeatOpCodeException(code, repeatInstr.GetType().Name, instr.GetType().Name);
+                if (_instructionTable[code] is not null)
+                    throw new RepeatOpCodeException(code, _instructionTable[code].GetType().Name, instr.GetType().Name);
                 _instructionTable[code] = instr;
             }
         }
@@ -35,11 +31,12 @@ internal sealed class Decoder : IDecoder
         if (state.Cycle == 0)
         {
 #if DEBUG
-            if (!_instructionTable.ContainsKey(code))
+            if (_instructionTable[code] is null)
                 throw new MissingInstrException(code);
 #endif
             _currentInstr = _instructionTable[code];
         }
+        state.Cycle++;
         _currentInstr?.Step(in state);
     }
 }

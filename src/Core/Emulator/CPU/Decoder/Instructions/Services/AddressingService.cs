@@ -1,8 +1,4 @@
 ﻿using RealNES.Core.Emulator.Communication;
-using System;
-using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 
 namespace RealNES.Core.Emulator.CPU.Decoder.Instructions.Services;
 
@@ -23,7 +19,7 @@ internal sealed class AddressingService
     public ushort GetAbsAddr() => (ushort)(_arg2 * 256 + _arg1);
     public void StepAbsX1(CpuBus bus, ref readonly CpuState state) => _arg1 = bus[state.Pc++];
     public void StepAbsX2(CpuBus bus, ref readonly CpuState state) => _arg2 = bus[state.Pc++];
-    public bool GetAbsXAddr1(CpuBus bus,ref readonly CpuState state,out ushort addr)
+    public bool GetAbsXAddr1(CpuBus bus, ref readonly CpuState state, out ushort addr)
     {
         var baseAddr = _arg1 + state.X;
         _addr = (ushort)(baseAddr + _arg2 * 256);
@@ -55,13 +51,13 @@ internal sealed class AddressingService
     public ushort GetAbsYAddr2() => _addr;
     public void StepIndirectX1(CpuBus bus, ref readonly CpuState state) => _arg1 = bus[state.Pc++];
     public void StepIndirectX2(CpuBus bus) => bus.Read(_arg1);
-    public void StepIndirectX3(CpuBus bus,ref readonly CpuState state) => _addr = bus[(_arg1 + state.X) % 256];
-    public void StepIndirectX4(CpuBus bus, ref readonly CpuState state) => _addr += (ushort)(bus[(_arg1 + state.X + 1) % 256]*256);
+    public void StepIndirectX3(CpuBus bus, ref readonly CpuState state) => _addr = bus[(_arg1 + state.X) % 256];
+    public void StepIndirectX4(CpuBus bus, ref readonly CpuState state) => _addr += (ushort)(bus[(_arg1 + state.X + 1) % 256] * 256);
     public ushort GetIndirectXAddr() => _addr;
     public void StepIndirectY1(CpuBus bus, ref readonly CpuState state) => _arg1 = bus[state.Pc++];
     public void StepIndirectY2(CpuBus bus) => _addr = bus[_arg1];
     public void StepIndirectY3(CpuBus bus) => _addr += (ushort)(bus[(_arg1 + 1) % 256] * 256);
-    public bool GetIndirectYAddr1(CpuBus bus,ref readonly CpuState state,out ushort addr)
+    public bool GetIndirectYAddr1(CpuBus bus, ref readonly CpuState state, out ushort addr)
     {
         var lowAddr = _addr & 0xff;
         if (lowAddr + state.Y < 256)

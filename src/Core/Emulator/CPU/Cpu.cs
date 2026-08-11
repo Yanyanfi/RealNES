@@ -1,7 +1,4 @@
 ﻿using RealNES.Core.Emulator.CPU.Decoder;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace RealNES.Core.Emulator.CPU;
 
@@ -15,11 +12,17 @@ internal sealed class Cpu(IDecoder decoder)
     private byte _sp;
     private byte _p;
     private int _cycle;
+    private bool _delayI;
     #endregion
+    private readonly IDecoder _decoder = decoder;
     public void Step()
     {
-        var state = new CpuState(ref _a, ref _x, ref _y, ref _pc, ref _sp, ref _p, ref _cycle);
-        decoder.Step(in state);
+        var state = new CpuState(ref _a, ref _x, ref _y, ref _pc, ref _sp, ref _p, ref _cycle, ref _delayI);
+        _decoder.Step(in state);
     }
-
+    public void Reset()
+    {
+        _sp = 0xfd;
+        _p = 0x24;
+    }
 }

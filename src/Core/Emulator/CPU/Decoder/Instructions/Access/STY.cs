@@ -7,7 +7,7 @@ namespace RealNES.Core.Emulator.CPU.Decoder.Instructions.Access;
 internal sealed class STY(InstructionServices services) : InstructionBase(services)
 {
     private byte _arg1;
-    
+
     public override IReadOnlyList<byte> OpCodes { get; } = [0x84, 0x94, 0x8c];
 
     public override void Process(ref readonly CpuState state)

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace RealNES.Core.Emulator.CPU.Decoder.Instructions.Services;
+﻿namespace RealNES.Core.Emulator.CPU.Decoder.Instructions.Services;
 
 internal sealed class FlagSetter
 {
@@ -15,7 +11,7 @@ internal sealed class FlagSetter
     public void SetNegative(ref readonly CpuState state, bool value) => SetFlag(in state, 7, value);
     public void SetZeroByNumber(ref readonly CpuState state, byte number) => SetZero(in state, number == 0);
     public void SetNegativeByNumber(ref readonly CpuState state, byte number) => SetZero(in state, number > 127);
-    private static void SetFlag(ref readonly CpuState state,int bitIndex,bool value)
+    private static void SetFlag(ref readonly CpuState state, int bitIndex, bool value)
     {
         var oddFlag = state.P;
         if (value)

@@ -8,5 +8,8 @@
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<WarningsAsErrors>nullable</WarningsAsErrors>
 	</PropertyGroup>
-
+	<ItemGroup>
+		<InternalsVisibleTo Include="RealNES.CoreTests" />
+		<InternalsVisibleTo Include="RealNES.CoreBenchmarks" />
+	</ItemGroup>
 </Project>

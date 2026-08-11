@@ -1,11 +1,11 @@
 ﻿using RealNES.Core.Emulator.CPU.Decoder.Instructions.Abstractions;
 using RealNES.Core.Emulator.CPU.Decoder.Instructions.Enums;
 
-namespace RealNES.Core.Emulator.CPU.Decoder.Instructions.Other;
+namespace RealNES.Core.Emulator.CPU.Decoder.Instructions.Stack;
 
-internal sealed class NOP(InstructionServices services) : InstructionBase(services)
+internal sealed class PHA(InstructionServices services) : InstructionBase(services)
 {
-    public override IReadOnlyList<byte> OpCodes { get; } = [0xea];
+    public override IReadOnlyList<byte> OpCodes { get; } = [0x48];
 
     public override void Process(ref readonly CpuState state)
     {
@@ -13,8 +13,11 @@ internal sealed class NOP(InstructionServices services) : InstructionBase(servic
         {
             case 2:
                 _bus.Read(state.Pc);
+                break;
+            case 3:
+                _stack.Push(in state, state.A);
                 EndInstr(in state);
-                return;
+                break;
         }
     }
 
