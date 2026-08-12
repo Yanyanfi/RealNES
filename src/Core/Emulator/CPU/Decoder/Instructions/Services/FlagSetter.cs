@@ -10,7 +10,7 @@ internal sealed class FlagSetter
     public void SetOverflow(ref readonly CpuState state, bool value) => SetFlag(in state, 6, value);
     public void SetNegative(ref readonly CpuState state, bool value) => SetFlag(in state, 7, value);
     public void SetZeroByNumber(ref readonly CpuState state, byte number) => SetZero(in state, number == 0);
-    public void SetNegativeByNumber(ref readonly CpuState state, byte number) => SetZero(in state, number > 127);
+    public void SetNegativeByNumber(ref readonly CpuState state, byte number) => SetNegative(in state, number > 127);
     private static void SetFlag(ref readonly CpuState state, int bitIndex, bool value)
     {
         var oddFlag = state.P;
