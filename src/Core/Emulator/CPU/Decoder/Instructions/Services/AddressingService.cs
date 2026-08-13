@@ -28,7 +28,7 @@ internal sealed class AddressingService
             addr = _addr;
             return true;
         }
-        bus.Read(0);
+        bus.Read((ushort)((byte)baseAddr + _arg2 * 256));
         addr = default;
         return false;
     }

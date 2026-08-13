@@ -1,6 +1,7 @@
 ﻿using RealNES.Core.Emulator.Communication;
 using RealNES.Core.Emulator.CPU.Decoder.Instructions.Abstractions;
 using RealNES.Core.Emulator.CPU.Decoder.Instructions.Access;
+using RealNES.Core.Emulator.CPU.Decoder.Instructions.Arithmetic;
 using RealNES.Core.Emulator.CPU.Decoder.Instructions.Jump;
 using RealNES.Core.Emulator.CPU.Decoder.Instructions.Other;
 using RealNES.Core.Emulator.CPU.Decoder.Instructions.Services;
@@ -33,6 +34,16 @@ internal sealed class InstructionsProvider(CpuBus bus)
             new TXA(services),
             new TAY(services),
             new TYA(services),
+            #endregion
+            #region Arithmetic
+            new ADC(services),
+            new SBC(services),
+            new INC(services),
+            new DEC(services),
+            new INX(services),
+            new DEX(services),
+            new INY(services),
+            new DEY(services),
             #endregion
             #region Jump
             new JMP(services),

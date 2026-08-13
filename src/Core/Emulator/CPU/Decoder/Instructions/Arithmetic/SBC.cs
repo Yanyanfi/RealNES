@@ -1,10 +1,6 @@
 ﻿using RealNES.Core.Emulator.CPU.Decoder.Exceptions;
 using RealNES.Core.Emulator.CPU.Decoder.Instructions.Abstractions;
 using RealNES.Core.Emulator.CPU.Decoder.Instructions.Enums;
-using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace RealNES.Core.Emulator.CPU.Decoder.Instructions.Arithmetic;
 
@@ -179,10 +175,10 @@ internal sealed class SBC(InstructionServices services) : InstructionBase(servic
                 break;
         }
     }
-    private void LastCycle(ref readonly CpuState state,byte operand)
+    private void LastCycle(ref readonly CpuState state, byte operand)
     {
         var diff = state.A - operand - (1 - (_flagReader.ReadCarry(in state) ? 1 : 0));
-        _flagSetter.SetCarry(in state, diff >=0);
+        _flagSetter.SetCarry(in state, diff >= 0);
         _flagSetter.SetZeroByNumber(in state, (byte)diff);
         _flagSetter.SetNegativeByNumber(in state, (byte)diff);
         _flagSetter.SetOverflow(in state, ((state.A ^ operand) & (state.A ^ diff) & 0x80) != 0);
