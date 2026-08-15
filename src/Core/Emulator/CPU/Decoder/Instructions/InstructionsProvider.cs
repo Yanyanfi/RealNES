@@ -5,6 +5,7 @@ using RealNES.Core.Emulator.CPU.Decoder.Instructions.Arithmetic;
 using RealNES.Core.Emulator.CPU.Decoder.Instructions.Bitwise;
 using RealNES.Core.Emulator.CPU.Decoder.Instructions.Branch;
 using RealNES.Core.Emulator.CPU.Decoder.Instructions.Compare;
+using RealNES.Core.Emulator.CPU.Decoder.Instructions.Flags;
 using RealNES.Core.Emulator.CPU.Decoder.Instructions.Jump;
 using RealNES.Core.Emulator.CPU.Decoder.Instructions.Other;
 using RealNES.Core.Emulator.CPU.Decoder.Instructions.Services;
@@ -90,6 +91,15 @@ internal sealed class InstructionsProvider(CpuBus bus)
             new PLP(services),
             new TXS(services),
             new TSX(services),
+            #endregion
+            #region Flags
+            new CLC(services),
+            new SEC(services),
+            new CLI(services),
+            new SEI(services),
+            new CLD(services),
+            new SED(services),
+            new CLV(services),
             #endregion
             #region Other
             new NOP(services),
