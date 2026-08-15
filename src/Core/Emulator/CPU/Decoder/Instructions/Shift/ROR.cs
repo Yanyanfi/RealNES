@@ -1,9 +1,6 @@
 ﻿using RealNES.Core.Emulator.CPU.Decoder.Exceptions;
 using RealNES.Core.Emulator.CPU.Decoder.Instructions.Abstractions;
 using RealNES.Core.Emulator.CPU.Decoder.Instructions.Enums;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace RealNES.Core.Emulator.CPU.Decoder.Instructions.Shift;
 
@@ -42,7 +39,7 @@ internal sealed class ROR(InstructionServices services) : InstructionBase(servic
             case 2:
                 var carry = state.A % 2 == 1;
                 _flagSetter.SetCarry(in state, carry);
-                state.A >>=1;
+                state.A >>= 1;
                 if (carry)
                     state.A += 128;
                 _flagSetter.SetZeroByNumber(in state, state.A);
@@ -146,7 +143,7 @@ internal sealed class ROR(InstructionServices services) : InstructionBase(servic
         _flagSetter.SetCarry(in state, carry);
         _data >>= 1;
         if (carry)
-            _data+=128;
+            _data += 128;
         _flagSetter.SetZeroByNumber(in state, _data);
         _flagSetter.SetNegativeByNumber(in state, _data);
     }

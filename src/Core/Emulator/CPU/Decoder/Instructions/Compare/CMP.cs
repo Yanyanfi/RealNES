@@ -1,23 +1,51 @@
-﻿using RealNES.Core.Emulator.CPU.Decoder.Instructions.Abstractions;
+﻿using RealNES.Core.Emulator.CPU.Decoder.Exceptions;
+using RealNES.Core.Emulator.CPU.Decoder.Instructions.Abstractions;
+using RealNES.Core.Emulator.CPU.Decoder.Instructions.Enums;
 
-namespace RealNES.Core.Emulator.CPU.Decoder.Instructions.Bitwise;
+namespace RealNES.Core.Emulator.CPU.Decoder.Instructions.Compare;
 
-internal abstract class BitWiseBase(InstructionServices services) : InstructionBase(services)
+internal sealed class CMP(InstructionServices services) : InstructionBase(services)
 {
+    public override IReadOnlyList<byte> OpCodes { get; } = [0xc9, 0xc5, 0xd5, 0xcd, 0xdd, 0xd9, 0xc1, 0xd1];
     private ushort _addr;
+
     public override void Process(ref readonly CpuState state)
     {
-        throw new NotImplementedException();
+        switch (_addressingType)
+        {
+            case AddressingType.Immediate:
+                StepImm(in state);
+                break;
+            case AddressingType.ZeroPage:
+                StepZp(in state);
+                break;
+            case AddressingType.ZeroPageX:
+                StepZpX(in state);
+                break;
+            case AddressingType.Absolute:
+                StepAbs(in state);
+                break;
+            case AddressingType.AbsoluteX:
+                StepAbsX(in state);
+                break;
+            case AddressingType.AbsoluteY:
+                StepAbsY(in state);
+                break;
+            case AddressingType.IndexedIndirect:
+                StepIndX(in state);
+                break;
+            case AddressingType.IndirectIndexed:
+                StepIndY(in state);
+                break;
+        }
     }
     private void StepImm(in CpuState state)
     {
         switch (state.Cycle)
         {
             case 2:
-                var data = _bus[state.Pc++];
-                ProcessData(in state, data);
-                _flagSetter.SetZeroByNumber(in state, state.A);
-                _flagSetter.SetNegativeByNumber(in state, state.A);
+                var value = _bus[state.Pc++];
+                LastCycle(in state, value);
                 break;
         }
     }
@@ -29,11 +57,8 @@ internal abstract class BitWiseBase(InstructionServices services) : InstructionB
                 _addr = _bus[state.Pc++];
                 break;
             case 3:
-                var data = _bus[_addr];
-                ProcessData(in state, data);
-                _flagSetter.SetZeroByNumber(in state, state.A);
-                _flagSetter.SetNegativeByNumber(in state, state.A);
-                EndInstr(in state);
+                var value = _bus[_addr];
+                LastCycle(in state, value);
                 break;
         }
     }
@@ -49,11 +74,8 @@ internal abstract class BitWiseBase(InstructionServices services) : InstructionB
                 break;
             case 4:
                 var addr = _ads.GetZpXAddr(in state);
-                var data = _bus[addr];
-                ProcessData(in state, data);
-                _flagSetter.SetZeroByNumber(in state, state.A);
-                _flagSetter.SetNegativeByNumber(in state, state.A);
-                EndInstr(in state);
+                var value = _bus[addr];
+                LastCycle(in state, value);
                 break;
         }
     }
@@ -69,11 +91,8 @@ internal abstract class BitWiseBase(InstructionServices services) : InstructionB
                 break;
             case 4:
                 var addr = _ads.GetAbsAddr();
-                var data = _bus[addr];
-                ProcessData(in state, data);
-                _flagSetter.SetZeroByNumber(in state, state.A);
-                _flagSetter.SetNegativeByNumber(in state, state.A);
-                EndInstr(in state);
+                var value = _bus[addr];
+                LastCycle(in state, value);
                 break;
         }
     }
@@ -89,20 +108,12 @@ internal abstract class BitWiseBase(InstructionServices services) : InstructionB
                 break;
             case 4:
                 if (_ads.GetAbsXAddr1(_bus, in state, out var addr))
-                {
-                    var data = _bus[addr];
-                    ProcessData(in state, data);
-                    _flagSetter.SetZeroByNumber(in state, state.A);
-                    _flagSetter.SetNegativeByNumber(in state, state.A);
-                    EndInstr(in state);
-                }
+                    LastCycle(in state, _bus[addr]);
                 break;
             case 5:
                 addr = _ads.GetAbsXAddr2();
-                ProcessData(in state, _bus[addr]);
-                _flagSetter.SetZeroByNumber(in state, state.A);
-                _flagSetter.SetNegativeByNumber(in state, state.A);
-                EndInstr(in state);
+                var value = _bus[addr];
+                LastCycle(in state, value);
                 break;
         }
     }
@@ -118,20 +129,11 @@ internal abstract class BitWiseBase(InstructionServices services) : InstructionB
                 break;
             case 4:
                 if (_ads.GetAbsYAddr1(_bus, in state, out var addr))
-                {
-                    var data = _bus[addr];
-                    ProcessData(in state, data);
-                    _flagSetter.SetZeroByNumber(in state, state.A);
-                    _flagSetter.SetNegativeByNumber(in state, state.A);
-                    EndInstr(in state);
-                }
+                    LastCycle(in state, _bus[addr]);
                 break;
             case 5:
                 addr = _ads.GetAbsYAddr2();
-                ProcessData(in state, _bus[addr]);
-                _flagSetter.SetZeroByNumber(in state, state.A);
-                _flagSetter.SetNegativeByNumber(in state, state.A);
-                EndInstr(in state);
+                LastCycle(in state, _bus[addr]);
                 break;
         }
     }
@@ -153,11 +155,7 @@ internal abstract class BitWiseBase(InstructionServices services) : InstructionB
                 break;
             case 6:
                 var addr = _ads.GetIndirectXAddr();
-                var data = _bus[addr];
-                ProcessData(in state, data);
-                _flagSetter.SetZeroByNumber(in state, state.A);
-                _flagSetter.SetNegativeByNumber(in state, state.A);
-                EndInstr(in state);
+                LastCycle(in state, _bus[addr]);
                 break;
         }
     }
@@ -176,22 +174,35 @@ internal abstract class BitWiseBase(InstructionServices services) : InstructionB
                 break;
             case 5:
                 if (_ads.GetIndirectYAddr1(_bus, in state, out var addr))
-                {
-                    var data = _bus[addr];
-                    ProcessData(in state, data);
-                    _flagSetter.SetZeroByNumber(in state, state.A);
-                    _flagSetter.SetNegativeByNumber(in state, state.A);
-                    EndInstr(in state);
-                }
+                    LastCycle(in state, _bus[addr]);
                 break;
             case 6:
                 addr = _ads.GetIndirectYAddr2();
-                ProcessData(in state, _bus[addr]);
-                _flagSetter.SetZeroByNumber(in state, state.A);
-                _flagSetter.SetNegativeByNumber(in state, state.A);
-                EndInstr(in state);
+                LastCycle(in state, _bus[addr]);
                 break;
         }
     }
-    protected abstract void ProcessData(in CpuState state, byte data);
+    private void LastCycle(in CpuState state, byte value)
+    {
+        _flagSetter.SetCarry(in state, state.A >= value);
+        var result = (byte)(state.A - value);
+        _flagSetter.SetZeroByNumber(in state, result);
+        _flagSetter.SetNegativeByNumber(in state, result);
+        EndInstr(in state);
+    }
+    protected override AddressingType GetAddressingType(byte opCode)
+    {
+        return opCode switch
+        {
+            0xc9 => AddressingType.Immediate,
+            0xc5 => AddressingType.ZeroPage,
+            0xd5 => AddressingType.ZeroPageX,
+            0xcd => AddressingType.Absolute,
+            0xdd => AddressingType.AbsoluteX,
+            0xd9 => AddressingType.AbsoluteY,
+            0xc1 => AddressingType.IndexedIndirect,
+            0xd1 => AddressingType.IndirectIndexed,
+            _ => throw new MissingInstrException(opCode)
+        };
+    }
 }

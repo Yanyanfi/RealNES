@@ -2,22 +2,34 @@
 using RealNES.Core.Emulator.CPU.Decoder.Instructions.Abstractions;
 using RealNES.Core.Emulator.CPU.Decoder.Instructions.Enums;
 
-namespace RealNES.Core.Emulator.CPU.Decoder.Instructions.Bitwise;
+namespace RealNES.Core.Emulator.CPU.Decoder.Instructions.Compare;
 
-internal sealed class BIT(InstructionServices services) : InstructionBase(services)
+internal sealed class CPY(InstructionServices services) : InstructionBase(services)
 {
-    public override IReadOnlyList<byte> OpCodes { get; } = [0x24, 0x2c];
+    public override IReadOnlyList<byte> OpCodes { get; } = [0xc0, 0xc4, 0xcc];
     private ushort _addr;
 
     public override void Process(ref readonly CpuState state)
     {
         switch (_addressingType)
         {
+            case AddressingType.Immediate:
+                StepImm(in state);
+                break;
             case AddressingType.ZeroPage:
                 StepZp(in state);
                 break;
             case AddressingType.Absolute:
                 StepAbs(in state);
+                break;
+        }
+    }
+    private void StepImm(in CpuState state)
+    {
+        switch (state.Cycle)
+        {
+            case 2:
+                LastCycle(in state, _bus[state.Pc++]);
                 break;
         }
     }
@@ -29,12 +41,7 @@ internal sealed class BIT(InstructionServices services) : InstructionBase(servic
                 _addr = _bus[state.Pc++];
                 break;
             case 3:
-                var data = _bus[_addr];
-                _flagSetter.SetOverflow(in state, (data & 0b1000000) != 0);
-                _flagSetter.SetNegativeByNumber(in state, data);
-                var result = (byte)(data & state.A);
-                _flagSetter.SetZeroByNumber(in state, result);
-                EndInstr(in state);
+                LastCycle(in state, _bus[_addr]);
                 break;
         }
     }
@@ -50,22 +57,26 @@ internal sealed class BIT(InstructionServices services) : InstructionBase(servic
                 break;
             case 4:
                 var addr = _ads.GetAbsAddr();
-                var data = _bus[addr];
-                _flagSetter.SetOverflow(in state, (data & 0b1000000) != 0);
-                _flagSetter.SetNegativeByNumber(in state, data);
-                var result = (byte)(data & state.A);
-                _flagSetter.SetZeroByNumber(in state, result);
-                EndInstr(in state);
+                var value = _bus[addr];
+                LastCycle(in state, value);
                 break;
         }
     }
-
+    private void LastCycle(in CpuState state, byte value)
+    {
+        _flagSetter.SetCarry(in state, state.Y >= value);
+        var result = (byte)(state.Y - value);
+        _flagSetter.SetZeroByNumber(in state, result);
+        _flagSetter.SetNegativeByNumber(in state, result);
+        EndInstr(in state);
+    }
     protected override AddressingType GetAddressingType(byte opCode)
     {
         return opCode switch
         {
-            0x24 => AddressingType.ZeroPage,
-            0x2c => AddressingType.Absolute,
+            0xc0 => AddressingType.Immediate,
+            0xc4 => AddressingType.ZeroPage,
+            0xcc => AddressingType.Absolute,
             _ => throw new MissingInstrException(opCode)
         };
     }

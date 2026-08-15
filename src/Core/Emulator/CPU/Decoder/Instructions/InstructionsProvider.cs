@@ -3,6 +3,7 @@ using RealNES.Core.Emulator.CPU.Decoder.Instructions.Abstractions;
 using RealNES.Core.Emulator.CPU.Decoder.Instructions.Access;
 using RealNES.Core.Emulator.CPU.Decoder.Instructions.Arithmetic;
 using RealNES.Core.Emulator.CPU.Decoder.Instructions.Bitwise;
+using RealNES.Core.Emulator.CPU.Decoder.Instructions.Compare;
 using RealNES.Core.Emulator.CPU.Decoder.Instructions.Jump;
 using RealNES.Core.Emulator.CPU.Decoder.Instructions.Other;
 using RealNES.Core.Emulator.CPU.Decoder.Instructions.Services;
@@ -58,6 +59,11 @@ internal sealed class InstructionsProvider(CpuBus bus)
             new ORA(services),
             new EOR(services),
             new BIT(services),
+            #endregion
+            #region Compare
+            new CMP(services),
+            new CPX(services),
+            new CPY(services),
             #endregion
             #region Jump
             new JMP(services),
