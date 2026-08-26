@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/benchmarks/">
+    <Project Path="benchmarks/RealNES.CoreBenchmarks/RealNES.CoreBenchmarks.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/Core/RealNES.Core.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/CoreTests/RealNES.CoreTests.csproj" />
+  </Folder>
+</Solution>
