@@ -37,10 +37,12 @@ internal sealed class ROR(InstructionServices services) : InstructionBase(servic
         switch (state.Cycle)
         {
             case 2:
+                _bus.Read(state.Pc);
+                var oldCarry = _flagReader.ReadCarry(in state);
                 var carry = state.A % 2 == 1;
                 _flagSetter.SetCarry(in state, carry);
                 state.A >>= 1;
-                if (carry)
+                if (oldCarry)
                     state.A += 128;
                 _flagSetter.SetZeroByNumber(in state, state.A);
                 _flagSetter.SetNegativeByNumber(in state, state.A);
@@ -139,10 +141,11 @@ internal sealed class ROR(InstructionServices services) : InstructionBase(servic
     private void MemoryLast2Cycle(ref readonly CpuState state)
     {
         _bus[_addr] = _data;
+        var oldCarry = _flagReader.ReadCarry(in state);
         var carry = _data % 2 == 1;
         _flagSetter.SetCarry(in state, carry);
         _data >>= 1;
-        if (carry)
+        if (oldCarry)
             _data += 128;
         _flagSetter.SetZeroByNumber(in state, _data);
         _flagSetter.SetNegativeByNumber(in state, _data);

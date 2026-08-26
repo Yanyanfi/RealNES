@@ -12,6 +12,7 @@ internal sealed class DEX(InstructionServices services) : InstructionBase(servic
         switch (state.Cycle)
         {
             case 2:
+                _bus.Read(state.Pc);
                 state.X--;
                 _flagSetter.SetZeroByNumber(in state, state.X);
                 _flagSetter.SetNegativeByNumber(in state, state.X);

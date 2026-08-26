@@ -10,6 +10,7 @@ internal abstract class FlagsBase(InstructionServices services) : InstructionBas
         switch (state.Cycle)
         {
             case 2:
+                _bus.Read(state.Pc);
                 SetOrClearFlag(in state);
                 EndInstr(in state);
                 break;

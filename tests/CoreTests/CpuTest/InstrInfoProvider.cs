@@ -4,6 +4,7 @@ using RealNES.Core.Emulator.CPU.Decoder.Instructions.Abstractions;
 using RealNES.Core.Emulator.CPU.Decoder.Instructions.Enums;
 using RealNES.CoreTests.CpuTest.Exceptions;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 
 namespace RealNES.CoreTests.CpuTest;
 

@@ -1,4 +1,5 @@
 ﻿using RealNES.Core.Emulator.CPU.Decoder.Instructions.Abstractions;
+using RealNES.Core.Emulator.CPU.Decoder.Instructions.Enums;
 
 namespace RealNES.Core.Emulator.CPU.Decoder.Instructions.Bitwise;
 
@@ -7,7 +8,33 @@ internal abstract class BitWiseBase(InstructionServices services) : InstructionB
     private ushort _addr;
     public override void Process(ref readonly CpuState state)
     {
-        throw new NotImplementedException();
+        switch (_addressingType)
+        {
+            case AddressingType.Immediate:
+                StepImm(in state);
+                break;
+            case AddressingType.ZeroPage:
+                StepZp(in state);
+                break;
+            case AddressingType.ZeroPageX:
+                StepZpX(in state);
+                break;
+            case AddressingType.Absolute:
+                StepAbs(in state);
+                break;
+            case AddressingType.AbsoluteX:
+                StepAbsX(in state);
+                break;
+            case AddressingType.AbsoluteY:
+                StepAbsY(in state);
+                break;
+            case AddressingType.IndexedIndirect:
+                StepIndX(in state);
+                break;
+            case AddressingType.IndirectIndexed:
+                StepIndY(in state);
+                break;
+        }
     }
     private void StepImm(in CpuState state)
     {
@@ -18,6 +45,7 @@ internal abstract class BitWiseBase(InstructionServices services) : InstructionB
                 ProcessData(in state, data);
                 _flagSetter.SetZeroByNumber(in state, state.A);
                 _flagSetter.SetNegativeByNumber(in state, state.A);
+                EndInstr(in state);
                 break;
         }
     }

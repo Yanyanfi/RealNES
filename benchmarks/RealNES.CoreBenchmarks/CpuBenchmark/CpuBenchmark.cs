@@ -1,7 +1,7 @@
 ﻿using BenchmarkDotNet.Attributes;
 using Iced.Intel;
 using RealNES.Core.Emulator;
-using RealNES.Core.Emulator.Communication;
+using RealNES.Core.Emulator.Bus;
 using RealNES.Core.Emulator.CPU;
 using RealNES.Core.Emulator.Memory;
 namespace RealNES.CoreBenchmarks.CpuBenchmark;

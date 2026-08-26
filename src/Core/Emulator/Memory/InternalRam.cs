@@ -2,7 +2,7 @@
 
 internal sealed class InternalRam
 {
-    private readonly byte[] _memory = new byte[0x800];
+    private readonly byte[] _memory = new byte[0x10000];
     public byte Read(ushort address) => _memory[address];
 
     public void Write(ushort address, byte value) => _memory[address] = value;

@@ -19,18 +19,19 @@ internal abstract class BranchBase(InstructionServices services) : InstructionBa
                 var pcLow = state.Pc & 0xff;
                 var pcHigh = state.Pc & 0xff00;
                 var sum = pcLow + _offset;
-                var addr = (ushort)(pcHigh + (byte)sum);
-                _bus.Read(addr);
+                var target = (ushort)(pcHigh + (byte)sum);
+                _bus.Read(state.Pc);
                 if (sum is <= 0xff and >= 0)
                 {
-                    state.Pc = addr;
+                    state.Pc = target;
                     EndInstr(in state);
                 }
                 break;
             case 4:
-                addr = (ushort)(state.Pc + _offset);
-                _bus.Read(addr);
-                state.Pc = addr;
+                target = (ushort)(state.Pc + _offset);
+                var dummy = (ushort)((state.Pc & 0xff00) | (target & 0x00ff));
+                _bus.Read(dummy);
+                state.Pc = target;
                 EndInstr(in state);
                 break;
         }

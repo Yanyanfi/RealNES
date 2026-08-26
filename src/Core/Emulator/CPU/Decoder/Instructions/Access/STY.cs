@@ -17,7 +17,7 @@ internal sealed class STY(InstructionServices services) : InstructionBase(servic
             case AddressingType.ZeroPage:
                 StepZp(in state);
                 break;
-            case AddressingType.ZeroPageY:
+            case AddressingType.ZeroPageX:
                 StepZpX(in state);
                 break;
             case AddressingType.Absolute:

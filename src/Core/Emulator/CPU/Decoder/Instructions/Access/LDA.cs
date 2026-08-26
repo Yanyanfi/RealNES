@@ -1,6 +1,7 @@
 ﻿using RealNES.Core.Emulator.CPU.Decoder.Exceptions;
 using RealNES.Core.Emulator.CPU.Decoder.Instructions.Abstractions;
 using RealNES.Core.Emulator.CPU.Decoder.Instructions.Enums;
+using System.Data;
 
 namespace RealNES.Core.Emulator.CPU.Decoder.Instructions.Access;
 
@@ -41,7 +42,6 @@ internal sealed class LDA(InstructionServices services) : InstructionBase(servic
     private byte _arg1;
     private byte _arg2;
     private ushort _addr;
-    private byte _peekArg1;
 
     private void StepImm(ref readonly CpuState state)
     {
@@ -73,14 +73,14 @@ internal sealed class LDA(InstructionServices services) : InstructionBase(servic
         switch (state.Cycle)
         {
             case 2:
-                _arg1 = _bus[state.Pc];
-                state.Pc++;
+                _ads.StepZpX1(_bus, in state);
                 return;
             case 3:
-                _peekArg1 = _bus[_arg1];
+                _ads.StepZpX2(_bus);
                 return;
             case 4:
-                state.A = _bus[(_peekArg1 + state.X) & 0xff];
+                var addr = _ads.GetZpXAddr(in state);
+                state.A = _bus[addr];
                 EndInstr(in state);
                 return;
         }
@@ -107,24 +107,21 @@ internal sealed class LDA(InstructionServices services) : InstructionBase(servic
         switch (state.Cycle)
         {
             case 2:
-                _arg1 = _bus[state.Pc++];
+                _ads.StepAbsX1(_bus, in state);
                 return;
             case 3:
-                _arg2 = _bus[state.Pc++];
+                _ads.StepAbsX2(_bus, in state);
                 return;
             case 4:
-                var baseAddr = _arg1 + state.X;
-                _addr = (ushort)(baseAddr + _arg2 * 256);
-                if (baseAddr <= 255)
+                if(_ads.GetAbsXAddr1(_bus,in state,out var addr))
                 {
-                    state.A = _bus[_addr];
+                    state.A = _bus[addr];
                     EndInstr(in state);
-                    return;
                 }
-                _bus.Read(0);
                 return;
             case 5:
-                state.A = _bus[_addr];
+                addr = _ads.GetAbsXAddr2();
+                state.A = _bus[addr];
                 EndInstr(in state);
                 return;
         }
@@ -134,24 +131,21 @@ internal sealed class LDA(InstructionServices services) : InstructionBase(servic
         switch (state.Cycle)
         {
             case 2:
-                _arg1 = _bus[state.Pc++];
+                _ads.StepAbsY1(_bus, in state);
                 return;
             case 3:
-                _arg2 = _bus[state.Pc++];
+                _ads.StepAbsY2(_bus, in state);
                 return;
             case 4:
-                var baseAddr = _arg1 + state.Y;
-                _addr = (ushort)(baseAddr + _arg2 * 256);
-                if (baseAddr <= 255)
+                if(_ads.GetAbsYAddr1(_bus,in state,out var addr))
                 {
-                    state.A = _bus[_addr];
+                    state.A = _bus[addr];
                     EndInstr(in state);
-                    return;
                 }
-                _bus.Read(0);
                 return;
             case 5:
-                state.A = _bus[_addr];
+                addr = _ads.GetAbsYAddr2();
+                state.A = _bus[addr];
                 EndInstr(in state);
                 return;
         }
@@ -170,7 +164,7 @@ internal sealed class LDA(InstructionServices services) : InstructionBase(servic
                 _addr = _bus[(_arg1 + state.X) % 256];
                 return;
             case 5:
-                _addr += _bus[(_arg1 + state.X + 1) % 256];
+                _addr += (ushort)(_bus[(_arg1 + state.X + 1) % 256] * 256);
                 return;
             case 6:
                 state.A = _bus[_addr];

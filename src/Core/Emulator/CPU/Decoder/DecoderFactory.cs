@@ -1,4 +1,4 @@
-﻿using RealNES.Core.Emulator.Communication;
+﻿using RealNES.Core.Emulator.Bus;
 using RealNES.Core.Emulator.CPU.Decoder.Instructions;
 
 namespace RealNES.Core.Emulator.CPU.Decoder;

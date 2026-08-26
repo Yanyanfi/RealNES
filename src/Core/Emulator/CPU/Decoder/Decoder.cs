@@ -1,4 +1,4 @@
-﻿using RealNES.Core.Emulator.Communication;
+﻿using RealNES.Core.Emulator.Bus;
 using RealNES.Core.Emulator.CPU.Decoder.Exceptions;
 using RealNES.Core.Emulator.CPU.Decoder.Instructions.Abstractions;
 
@@ -27,9 +27,9 @@ internal sealed class Decoder : IDecoder
     ///<exception cref="MissingInstrException"/>
     public void Step(ref readonly CpuState state)
     {
-        var code = _cpuBus[state.Pc];
         if (state.Cycle == 0)
         {
+            var code = _cpuBus[state.Pc];
 #if DEBUG
             if (_instructionTable[code] is null)
                 throw new MissingInstrException(code);

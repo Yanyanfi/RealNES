@@ -18,7 +18,7 @@ internal sealed class RTI(InstructionServices services) : InstructionBase(servic
                 _bus.Read(_stack.GetTopAddress(in state));
                 break;
             case 4:
-                state.P = _stack.Pull(in state);
+                state.P = (byte)((_stack.Pull(in state) & 0xCF) | 0x20);
                 break;
             case 5:
                 _addr = _stack.Pull(in state);

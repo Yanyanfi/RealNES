@@ -100,7 +100,7 @@ internal sealed class ADC(InstructionServices services) : InstructionBase(servic
                 _ads.StepAbsX1(_bus, in state);
                 break;
             case 3:
-                _ads.StepAbsX1(_bus, in state);
+                _ads.StepAbsX2(_bus, in state);
                 break;
             case 4:
                 if (_ads.GetAbsXAddr1(_bus, in state, out var addr))

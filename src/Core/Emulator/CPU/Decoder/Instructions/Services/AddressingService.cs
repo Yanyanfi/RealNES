@@ -1,4 +1,4 @@
-﻿using RealNES.Core.Emulator.Communication;
+﻿using RealNES.Core.Emulator.Bus;
 
 namespace RealNES.Core.Emulator.CPU.Decoder.Instructions.Services;
 
@@ -6,14 +6,14 @@ internal sealed class AddressingService
 {
     private byte _arg1;
     private byte _arg2;
-    private byte _temp;
+    //private byte _temp;
     private ushort _addr;
     public void StepZpX1(CpuBus bus, ref readonly CpuState state) => _arg1 = bus[state.Pc++];
-    public void StepZpX2(CpuBus bus) => _temp = bus[_arg1];
-    public byte GetZpXAddr(ref readonly CpuState state) => (byte)((_temp + state.X) & 0xff);
+    public void StepZpX2(CpuBus bus) => bus.Read(_arg1);
+    public byte GetZpXAddr(ref readonly CpuState state) => (byte)(_arg1 + state.X);
     public void StepZpY1(CpuBus bus, ref readonly CpuState state) => _arg1 = bus[state.Pc++];
-    public void StepZpY2(CpuBus bus) => _temp = bus[_arg1];
-    public byte GetZpYAddr(ref readonly CpuState state) => (byte)((_temp + state.Y) & 0xff);
+    public void StepZpY2(CpuBus bus) => bus.Read(_arg1);
+    public byte GetZpYAddr(ref readonly CpuState state) => (byte)(_arg1 + state.Y);
     public void StepAbs1(CpuBus bus, ref readonly CpuState state) => _arg1 = bus[state.Pc++];
     public void StepAbs2(CpuBus bus, ref readonly CpuState state) => _arg2 = bus[state.Pc++];
     public ushort GetAbsAddr() => (ushort)(_arg2 * 256 + _arg1);
@@ -44,7 +44,7 @@ internal sealed class AddressingService
             addr = _addr;
             return true;
         }
-        bus.Read(0);
+        bus.Read((ushort)((byte)baseAddr + _arg2 * 256));
         addr = default;
         return false;
     }

@@ -41,7 +41,7 @@ internal sealed class INC(InstructionServices services) : InstructionBase(servic
                 _bus[_addr] = _data;
                 var result = _data + 1;
                 _flagSetter.SetZeroByNumber(in state, (byte)result);
-                _flagSetter.SetZeroByNumber(in state, (byte)result);
+                _flagSetter.SetNegativeByNumber(in state, (byte)result);
                 _data = (byte)result;
                 break;
             case 5:

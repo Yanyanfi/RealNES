@@ -36,6 +36,7 @@ internal sealed class ASL(InstructionServices services) : InstructionBase(servic
         switch (state.Cycle)
         {
             case 2:
+                _bus.Read(state.Pc);
                 _flagSetter.SetCarry(in state, state.A >= 128);
                 state.A <<= 1;
                 _flagSetter.SetZeroByNumber(in state, state.A);

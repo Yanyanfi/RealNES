@@ -42,7 +42,7 @@ internal sealed class DEC(InstructionServices services) : InstructionBase(servic
                 _bus[_addr] = _data;
                 _data--;
                 _flagSetter.SetZeroByNumber(in state, _data);
-                _flagSetter.SetZeroByNumber(in state, _data);
+                _flagSetter.SetNegativeByNumber(in state, _data);
                 break;
             case 5:
                 _bus[_addr] = _data;

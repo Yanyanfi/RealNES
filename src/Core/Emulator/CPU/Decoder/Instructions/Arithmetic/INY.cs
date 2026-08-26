@@ -12,6 +12,7 @@ internal sealed class INY(InstructionServices services) : InstructionBase(servic
         switch (state.Cycle)
         {
             case 2:
+                _bus.Read(state.Pc);
                 state.Y++;
                 _flagSetter.SetZeroByNumber(in state, state.Y);
                 _flagSetter.SetNegativeByNumber(in state, state.Y);

@@ -1,4 +1,4 @@
-﻿using RealNES.Core.Emulator.Communication;
+﻿using RealNES.Core.Emulator.Bus;
 using System.Text;
 
 namespace RealNES.CoreTests.CpuTest;
@@ -30,9 +30,9 @@ internal sealed class StateLogger(CpuStateProvider cpuStateProvider, InstrInfoPr
         sb.Append(_cycle); sb.Append(',');
         sb.Append(bus.LastAddress); sb.Append(',');
         sb.Append(bus.LastData); sb.Append(',');
-        var io = (bus.IsReadOrWriteLastCycle, bus.IsWrite) switch
+        var io = (bus.IsRead, bus.IsWrite) switch
         {
-            (false, _) => 'N',
+            (false, false) => 'N',
             (_, true) => 'w',
             _ => 'r'
         };

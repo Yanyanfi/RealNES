@@ -12,10 +12,10 @@ internal sealed class PHP(InstructionServices services) : InstructionBase(servic
         switch (state.Cycle)
         {
             case 2:
-                _bus.Read(_stack.GetTopAddress(in state));
+                _bus.Read(state.Pc);
                 break;
             case 3:
-                var flag = (byte)(state.P | 0x110000);
+                var flag = (byte)(state.P | 0b110000);
                 _stack.Push(in state, flag);
                 EndInstr(in state);
                 break;

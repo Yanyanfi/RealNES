@@ -35,6 +35,7 @@ internal sealed class LSR(InstructionServices services) : InstructionBase(servic
         switch (state.Cycle)
         {
             case 2:
+                _bus.Read(state.Pc);
                 _flagSetter.SetCarry(in state, state.A % 2 != 0);
                 state.A >>= 1;
                 _flagSetter.SetZeroByNumber(in state, state.A);

@@ -52,7 +52,7 @@ internal sealed class JMP(InstructionServices services) : InstructionBase(servic
                 _addr = _bus[state.Pc++];
                 break;
             case 3:
-                _addr += (byte)(_bus[state.Pc] << 8);
+                _addr += (ushort)(_bus[state.Pc] << 8);
                 state.Pc = _addr;
                 EndInstr(in state);
                 break;
